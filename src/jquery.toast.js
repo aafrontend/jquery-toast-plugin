@@ -150,18 +150,17 @@ if ( typeof Object.create !== 'function' ) {
 
                 e.preventDefault();
 
+                that._toastEl.trigger('beforeHide');
+
                 if( that.options.showHideTransition === 'fade') {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.fadeOut(function () {
                         that._toastEl.trigger('afterHidden');
                     });
                 } else if ( that.options.showHideTransition === 'slide' ) {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.slideUp(function () {
                         that._toastEl.trigger('afterHidden');
                     });
                 } else {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.hide(function () {
                         that._toastEl.trigger('afterHidden');
                     });
@@ -292,18 +291,17 @@ if ( typeof Object.create !== 'function' ) {
 
                 window.setTimeout(function(){
                     
+                    that._toastEl.trigger('beforeHide');
+
                     if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.fadeOut(function () {
                             that._toastEl.trigger('afterHidden');
                         });
                     } else if ( that.options.showHideTransition.toLowerCase() === 'slide' ) {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.slideUp(function () {
                             that._toastEl.trigger('afterHidden');
                         });
                     } else {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.hide(function () {
                             that._toastEl.trigger('afterHidden');
                         });
@@ -349,7 +347,7 @@ if ( typeof Object.create !== 'function' ) {
             },
             
             close: function( ) {
-            	toast.close( );
+                toast.close( );
             }
         };
     };
@@ -368,11 +366,11 @@ if ( typeof Object.create !== 'function' ) {
         textColor: false,
         textAlign: 'left',
         icon: false,
-        beforeShow: function () {},
-        afterShown: function () {},
-        beforeHide: function () {},
-        afterHidden: function () {},
-        onClick: function () {}
+        beforeShow: null,
+        afterShown: null,
+        beforeHide: null,
+        afterHidden: null,
+        onClick: null
     };
 
 })( jQuery, window );
