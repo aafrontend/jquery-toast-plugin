@@ -1,5 +1,5 @@
 /*!
-jQuery toast plugin v.1.3.3
+jQuery toast plugin v.1.4.0
 Copyright (C) 2015-2017 Kamran Ahmed <http://kamranahmed.info>
 License MIT
 */
@@ -11,10 +11,10 @@ if ( typeof Object.create !== 'function' ) {
     };
 }
 
-(function( $, window ) {
+(function( $, window ) { "$:nomunge"
 
     "use strict";
-    
+
     var Toast = {
 
         _positionClasses : ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'],
@@ -44,15 +44,13 @@ if ( typeof Object.create !== 'function' ) {
         },
 
         setup: function () {
-            
+
             var _toastContent = '';
-            
-            this._toastEl = this._toastEl || $('<div></div>', {
-                class : 'jq-toast-single'
-            });
+
+            this._toastEl = this._toastEl || $('<div class="jq-toast-single"></div>');
 
             // For the loader on top
-            _toastContent += '<span class="jq-toast-loader"></span>';            
+            _toastContent += '<span class="jq-toast-loader"></span>';
 
             if ( this.options.allowToastClose ) {
                 var icon;
@@ -61,7 +59,7 @@ if ( typeof Object.create !== 'function' ) {
                 } else {
                     icon = '&times;';
                 }
-                _toastContent += '<span class="close-jq-toast-single">'+ icon +'</span>';
+                _toastContent += '<span class="jq-toast-close">' + icon + '</span>';
             }
 
             if ( this.options.text instanceof Array ) {
@@ -85,19 +83,19 @@ if ( typeof Object.create !== 'function' ) {
 
             this._toastEl.html( _toastContent );
 
-            if ( this.options.bgColor !== false ) {
-                this._toastEl.css("background-color", this.options.bgColor);
+            if ( this.options.bgColor ) {
+                this._toastEl.css('background-color', this.options.bgColor);
             }
 
-            if ( this.options.textColor !== false ) {
-                this._toastEl.css("color", this.options.textColor);
+            if ( this.options.textColor ) {
+                this._toastEl.css('color', this.options.textColor);
             }
 
             if ( this.options.textAlign ) {
                 this._toastEl.css('text-align', this.options.textAlign);
             }
 
-            if ( this.options.icon !== false ) {
+            if ( this.options.icon ) {
                 this._toastEl.addClass('jq-has-icon');
 
                 if ( this._defaultIcons.indexOf(this.options.icon) !== -1 ) {
@@ -105,8 +103,8 @@ if ( typeof Object.create !== 'function' ) {
                 }
             }
 
-            if ( this.options.class !== false ){
-                this._toastEl.addClass(this.options.class);
+            if ( this.options.xclass ) {
+                this._toastEl.addClass(this.options.xclass);
             }
         },
 
@@ -152,7 +150,7 @@ if ( typeof Object.create !== 'function' ) {
                 that.processLoader();
             });
 
-            this._toastEl.find('.close-jq-toast-single').on('click', function ( e ) {
+            this._toastEl.find('.jq-toast-close').on('click', function ( e ) {
 
                 e.preventDefault();
 
@@ -201,20 +199,16 @@ if ( typeof Object.create !== 'function' ) {
                 this._toastEl.on('click', function () {
                     that.options.onClick(that._toastEl);
                 });
-            }    
+            }
         },
 
         addToDom: function () {
 
              var _container = $('.jq-toast-wrap');
-             
+
              if ( _container.length === 0 ) {
-                
-                _container = $('<div></div>',{
-                    class: "jq-toast-wrap",
-                    role: "alert",
-                    "aria-live": "polite"
-                });
+
+                _container = $('<div class="jq-toast-wrap" role="alert" aria-live="polite"></div>');
 
                 $('body').append( _container );
 
@@ -227,7 +221,7 @@ if ( typeof Object.create !== 'function' ) {
              _container.append( this._toastEl );
 
             if ( this.options.stack && !isNaN( parseInt( this.options.stack ), 10 ) ) {
-                
+
                 var _prevToastCount = _container.find('.jq-toast-single').length,
                     _extToastCount = _prevToastCount - this.options.stack;
 
@@ -250,14 +244,13 @@ if ( typeof Object.create !== 'function' ) {
                 return false;
             }
 
-            var loader = this._toastEl.find('.jq-toast-loader');
-
+            var loader = this._toastEl.find('.jq-toast-loader'),
             // 400 is the default time that jquery uses for fade/slide
             // Divide by 1000 for milliseconds to seconds conversion
-            var transitionTime = (this.options.hideAfter - 400) / 1000 + 's';
-            var loaderBg = this.options.loaderBg;
+                transitionTime = (this.options.hideAfter - 400) / 1000 + 's',
+                loaderBg = this.options.loaderBg,
 
-            var style = loader.attr('style') || '';
+                style = loader.attr('style') || '';
             style = style.substring(0, style.indexOf('-webkit-transition')); // Remove the last transition definition
 
             style += '-webkit-transition:width ' + transitionTime + ' ease-in;' +
@@ -296,7 +289,7 @@ if ( typeof Object.create !== 'function' ) {
                 that = this;
 
                 window.setTimeout(function(){
-                    
+
                     that._toastEl.trigger('beforeHide');
 
                     if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
@@ -332,18 +325,18 @@ if ( typeof Object.create !== 'function' ) {
             this.setup();
             this.bindToast();
         },
-        
+
         close: function() {
-            this._toastEl.find('.close-jq-toast-single').click();
+            this._toastEl.find('.jq-toast-close').click();
         }
     };
-    
+
     $.toast = function(options) {
         var toast = Object.create(Toast);
         toast.init(options, this);
 
         return {
-            
+
             reset: function ( what ) {
                 toast.reset( what );
             },
@@ -351,7 +344,7 @@ if ( typeof Object.create !== 'function' ) {
             update: function( options ) {
                 toast.update( options );
             },
-            
+
             close: function( ) {
                 toast.close( );
             }
@@ -372,7 +365,8 @@ if ( typeof Object.create !== 'function' ) {
         textColor: false,
         textAlign: 'left',
         icon: false,
-        closeicon: false,
+        closeicon: '&times;', //html or icon-url
+        xclass: false,
         beforeShow: null,
         afterShown: null,
         beforeHide: null,
