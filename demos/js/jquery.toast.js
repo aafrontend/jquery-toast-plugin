@@ -1,4 +1,8 @@
-// jQuery toast plugin created by Kamran Ahmed copyright MIT license 2015
+/*!
+jQuery toast plugin v.1.3.3
+Copyright (C) 2015-2017 Kamran Ahmed <http://kamranahmed.info>
+License MIT
+*/
 if ( typeof Object.create !== 'function' ) {
     Object.create = function( obj ) {
         function F() {}
@@ -7,7 +11,7 @@ if ( typeof Object.create !== 'function' ) {
     };
 }
 
-(function( $, window, document, undefined ) {
+(function( $, window ) {
 
     "use strict";
     
@@ -51,14 +55,20 @@ if ( typeof Object.create !== 'function' ) {
             _toastContent += '<span class="jq-toast-loader"></span>';            
 
             if ( this.options.allowToastClose ) {
-                _toastContent += '<span class="close-jq-toast-single">&times;</span>';
-            };
+                var icon;
+                if ( this.options.closeicon ) {
+                    icon = this.options.closeicon;
+                } else {
+                    icon = '&times;';
+                }
+                _toastContent += '<span class="close-jq-toast-single">'+ icon +'</span>';
+            }
 
             if ( this.options.text instanceof Array ) {
 
                 if ( this.options.heading ) {
-                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
-                };
+                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
+                }
 
                 _toastContent += '<ul class="jq-toast-ul">';
                 for (var i = 0; i < this.options.text.length; i++) {
@@ -68,8 +78,8 @@ if ( typeof Object.create !== 'function' ) {
 
             } else {
                 if ( this.options.heading ) {
-                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
-                };
+                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
+                }
                 _toastContent += this.options.text;
             }
 
@@ -77,11 +87,11 @@ if ( typeof Object.create !== 'function' ) {
 
             if ( this.options.bgColor !== false ) {
                 this._toastEl.css("background-color", this.options.bgColor);
-            };
+            }
 
             if ( this.options.textColor !== false ) {
                 this._toastEl.css("color", this.options.textColor);
-            };
+            }
 
             if ( this.options.textAlign ) {
                 this._toastEl.css('text-align', this.options.textAlign);
@@ -90,18 +100,18 @@ if ( typeof Object.create !== 'function' ) {
             if ( this.options.icon !== false ) {
                 this._toastEl.addClass('jq-has-icon');
 
-                if ( $.inArray(this.options.icon, this._defaultIcons) !== -1 ) {
+                if ( this._defaultIcons.indexOf(this.options.icon) !== -1 ) {
                     this._toastEl.addClass('jq-icon-' + this.options.icon);
-                };
-            };
+                }
+            }
 
             if ( this.options.class !== false ){
-                this._toastEl.addClass(this.options.class)
+                this._toastEl.addClass(this.options.class);
             }
         },
 
         position: function () {
-            if ( ( typeof this.options.position === 'string' ) && ( $.inArray( this.options.position, this._positionClasses) !== -1 ) ) {
+            if ( ( typeof this.options.position === 'string' ) && ( this._positionClasses.indexOf(this.options.position) !== -1 ) ) {
 
                 if ( this.options.position === 'bottom-center' ) {
                     this._container.css({
@@ -146,47 +156,52 @@ if ( typeof Object.create !== 'function' ) {
 
                 e.preventDefault();
 
+                that._toastEl.trigger('beforeHide');
+
                 if( that.options.showHideTransition === 'fade') {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.fadeOut(function () {
                         that._toastEl.trigger('afterHidden');
                     });
                 } else if ( that.options.showHideTransition === 'slide' ) {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.slideUp(function () {
                         that._toastEl.trigger('afterHidden');
                     });
                 } else {
-                    that._toastEl.trigger('beforeHide');
                     that._toastEl.hide(function () {
                         that._toastEl.trigger('afterHidden');
                     });
                 }
             });
 
-            if ( typeof this.options.beforeShow == 'function' ) {
+            if ( typeof this.options.beforeShow === 'function' ) {
                 this._toastEl.on('beforeShow', function () {
-                    that.options.beforeShow();
+                    that.options.beforeShow(that._toastEl);
                 });
-            };
+            }
 
-            if ( typeof this.options.afterShown == 'function' ) {
+            if ( typeof this.options.afterShown === 'function' ) {
                 this._toastEl.on('afterShown', function () {
-                    that.options.afterShown();
+                    that.options.afterShown(that._toastEl);
                 });
-            };
+            }
 
-            if ( typeof this.options.beforeHide == 'function' ) {
+            if ( typeof this.options.beforeHide === 'function' ) {
                 this._toastEl.on('beforeHide', function () {
-                    that.options.beforeHide();
+                    that.options.beforeHide(that._toastEl);
                 });
-            };
+            }
 
-            if ( typeof this.options.afterHidden == 'function' ) {
+            if ( typeof this.options.afterHidden === 'function' ) {
                 this._toastEl.on('afterHidden', function () {
-                    that.options.afterHidden();
+                    that.options.afterHidden(that._toastEl);
                 });
-            };          
+            }
+
+            if ( typeof this.options.onClick === 'function' ) {
+                this._toastEl.on('click', function () {
+                    that.options.onClick(that._toastEl);
+                });
+            }    
         },
 
         addToDom: function () {
@@ -218,7 +233,7 @@ if ( typeof Object.create !== 'function' ) {
 
                 if ( _extToastCount > 0 ) {
                     $('.jq-toast-wrap').find('.jq-toast-single').slice(0, _extToastCount).remove();
-                };
+                }
 
             }
 
@@ -245,10 +260,10 @@ if ( typeof Object.create !== 'function' ) {
             var style = loader.attr('style') || '';
             style = style.substring(0, style.indexOf('-webkit-transition')); // Remove the last transition definition
 
-            style += '-webkit-transition: width ' + transitionTime + ' ease-in; \
-                      -o-transition: width ' + transitionTime + ' ease-in; \
-                      transition: width ' + transitionTime + ' ease-in; \
-                      background-color: ' + loaderBg + ';';
+            style += '-webkit-transition:width ' + transitionTime + ' ease-in;' +
+                     '-o-transition:width ' + transitionTime + ' ease-in;' +
+                     'transition:width ' + transitionTime + ' ease-in;' +
+                     'background-color:' + loaderBg + ';';
 
 
             loader.attr('style', style).addClass('jq-toast-loaded');
@@ -278,29 +293,28 @@ if ( typeof Object.create !== 'function' ) {
 
             if (this.canAutoHide()) {
 
-                var that = this;
+                that = this;
 
                 window.setTimeout(function(){
                     
+                    that._toastEl.trigger('beforeHide');
+
                     if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.fadeOut(function () {
                             that._toastEl.trigger('afterHidden');
                         });
                     } else if ( that.options.showHideTransition.toLowerCase() === 'slide' ) {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.slideUp(function () {
                             that._toastEl.trigger('afterHidden');
                         });
                     } else {
-                        that._toastEl.trigger('beforeHide');
                         that._toastEl.hide(function () {
                             that._toastEl.trigger('afterHidden');
                         });
                     }
 
                 }, this.options.hideAfter);
-            };
+            }
         },
 
         reset: function ( resetWhat ) {
@@ -317,6 +331,10 @@ if ( typeof Object.create !== 'function' ) {
             this.prepareOptions(options, this.options);
             this.setup();
             this.bindToast();
+        },
+        
+        close: function() {
+            this._toastEl.find('.close-jq-toast-single').click();
         }
     };
     
@@ -332,8 +350,12 @@ if ( typeof Object.create !== 'function' ) {
 
             update: function( options ) {
                 toast.update( options );
+            },
+            
+            close: function( ) {
+                toast.close( );
             }
-        }
+        };
     };
 
     $.toast.options = {
@@ -350,10 +372,12 @@ if ( typeof Object.create !== 'function' ) {
         textColor: false,
         textAlign: 'left',
         icon: false,
-        beforeShow: function () {},
-        afterShown: function () {},
-        beforeHide: function () {},
-        afterHidden: function () {}
+        closeicon: false,
+        beforeShow: null,
+        afterShown: null,
+        beforeHide: null,
+        afterHidden: null,
+        onClick: null
     };
 
-})( jQuery, window, document );
+})( jQuery, window );

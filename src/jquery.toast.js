@@ -55,13 +55,19 @@ if ( typeof Object.create !== 'function' ) {
             _toastContent += '<span class="jq-toast-loader"></span>';            
 
             if ( this.options.allowToastClose ) {
-                _toastContent += '<span class="close-jq-toast-single">&times;</span>';
+                var icon;
+                if ( this.options.closeicon ) {
+                    icon = this.options.closeicon;
+                } else {
+                    icon = '&times;';
+                }
+                _toastContent += '<span class="close-jq-toast-single">'+ icon +'</span>';
             }
 
             if ( this.options.text instanceof Array ) {
 
                 if ( this.options.heading ) {
-                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
+                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
                 }
 
                 _toastContent += '<ul class="jq-toast-ul">';
@@ -72,7 +78,7 @@ if ( typeof Object.create !== 'function' ) {
 
             } else {
                 if ( this.options.heading ) {
-                    _toastContent +='<h2 class="jq-toast-heading">' + this.options.heading + '</h2>';
+                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
                 }
                 _toastContent += this.options.text;
             }
@@ -94,7 +100,7 @@ if ( typeof Object.create !== 'function' ) {
             if ( this.options.icon !== false ) {
                 this._toastEl.addClass('jq-has-icon');
 
-                if ( $.inArray(this.options.icon, this._defaultIcons) !== -1 ) {
+                if ( this._defaultIcons.indexOf(this.options.icon) !== -1 ) {
                     this._toastEl.addClass('jq-icon-' + this.options.icon);
                 }
             }
@@ -105,7 +111,7 @@ if ( typeof Object.create !== 'function' ) {
         },
 
         position: function () {
-            if ( ( typeof this.options.position === 'string' ) && ( $.inArray( this.options.position, this._positionClasses) !== -1 ) ) {
+            if ( ( typeof this.options.position === 'string' ) && ( this._positionClasses.indexOf(this.options.position) !== -1 ) ) {
 
                 if ( this.options.position === 'bottom-center' ) {
                     this._container.css({
@@ -167,31 +173,31 @@ if ( typeof Object.create !== 'function' ) {
                 }
             });
 
-            if ( typeof this.options.beforeShow == 'function' ) {
+            if ( typeof this.options.beforeShow === 'function' ) {
                 this._toastEl.on('beforeShow', function () {
                     that.options.beforeShow(that._toastEl);
                 });
             }
 
-            if ( typeof this.options.afterShown == 'function' ) {
+            if ( typeof this.options.afterShown === 'function' ) {
                 this._toastEl.on('afterShown', function () {
                     that.options.afterShown(that._toastEl);
                 });
             }
 
-            if ( typeof this.options.beforeHide == 'function' ) {
+            if ( typeof this.options.beforeHide === 'function' ) {
                 this._toastEl.on('beforeHide', function () {
                     that.options.beforeHide(that._toastEl);
                 });
             }
 
-            if ( typeof this.options.afterHidden == 'function' ) {
+            if ( typeof this.options.afterHidden === 'function' ) {
                 this._toastEl.on('afterHidden', function () {
                     that.options.afterHidden(that._toastEl);
                 });
             }
 
-            if ( typeof this.options.onClick == 'function' ) {
+            if ( typeof this.options.onClick === 'function' ) {
                 this._toastEl.on('click', function () {
                     that.options.onClick(that._toastEl);
                 });
@@ -366,6 +372,7 @@ if ( typeof Object.create !== 'function' ) {
         textColor: false,
         textAlign: 'left',
         icon: false,
+        closeicon: false,
         beforeShow: null,
         afterShown: null,
         beforeHide: null,
