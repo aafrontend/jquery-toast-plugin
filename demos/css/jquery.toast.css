@@ -18,8 +18,7 @@
 .jq-toast-single ul li { list-style-type: disc !important; line-height: 1.1em; background: none; margin: 0; padding: 0; letter-spacing: normal; }
 
 .jq-toast-heading { padding-bottom:10px; font-size: 1em; font-weight: bold; color: inherit; line-height: inherit; text-align: center; }
-
-.close-jq-toast-single { position: absolute; top: 3px; right: 7px; font-size: 0.9em; cursor: pointer; }
+.jq-toast-close,.close-jq-toast-single { position: absolute; top: 3px; right: 7px; font-size: 0.9em; cursor: pointer; }
 
 .jq-toast-loader { display: block; position: absolute; top: -2px; height: 5px; width: 0%; left: 0; border-radius: 5px; background: red; }
 .jq-toast-loaded { width: 100%; }
