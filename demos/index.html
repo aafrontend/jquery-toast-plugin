@@ -24,7 +24,7 @@
         span.k { display: inline-block; width: 175px; }
         span.c { color: #F7BCBC; padding-left: 30px; }
         .plugin-options label { display: inline-block; width: 265px; }
-        span.toast-position span.k { display: inline; } 
+        span.toast-position span.k { display: inline; }
         .toast-index .muted { display: block; color: #AD9D9D; }
         .toast-index .muted:hover { color: #333; }
         .latest-update { padding: 0px 30px; border: 1px dashed; margin: 30px 0; box-sizing: border-box; }
@@ -34,7 +34,7 @@
     <div class="container">
         <h1 style="text-align: center; margin: 20px 0px;">Jquery Toast Plugin</h1>
         <hr>
-        
+
         <h1>Index</h1>
         <ul class="toast-index">
             <li><a href="#quick-demos">Quick Demos</a> <span class="muted">Some quick demos and the code to generate that, if you are in a hurry!</span></li>
@@ -59,7 +59,7 @@
                 </ul>
             </li>
         </ul>
-        
+
         <div class="latest-update">
             <h1 id="latest-update">Latest Update</h1>
             <p>Toast loader has been introduced in the latest version. Check the demo below to see it in action</p>
@@ -81,7 +81,7 @@
 })</code></pre>
             </div>
         </div>
-        
+
 
 
         <h1 id="quick-demos">Quick Demos</h1>
@@ -143,7 +143,7 @@
     text: 'This will become the toast message'
 })</code></pre>
         </div>
-        
+
         <p>The text can be an array:</p>
 
         <div class="code-runner">
@@ -151,16 +151,16 @@
 <pre><code>$.toast({
     heading: 'How to contribute?!',
     text: [
-        'Fork the repository', 
-        'Improve/extend the functionality', 
+        'Fork the repository',
+        'Improve/extend the functionality',
         'Create a pull request'
     ],
     icon: 'info'
 })</code></pre>
         </div>
-    
+
         <p>Or put some HTML in the text</p>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run code</a>
 <pre><code>$.toast({
@@ -183,7 +183,7 @@
 
         <h2 id="sticky-toast"><span class="muted">2.</span> Making them sticky:</h2>
         <p>There will be times, when you will want to have <strong>sticky toasts</strong>. To make them <strong>sticky</strong>, all you have to do is set the <span class="code">hideAfter</span> to <span class="code">false</span>. Here is a sticky toast</p>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -191,12 +191,12 @@
     hideAfter: false
 })</code></pre>
         </div>
-        
+
         <p><sup>*</sup> <span class="code">hideAfter</span> property is basically used to set the timer after which the toast will get hidden. But you can set it to false in order to achieve the sticky toasts.</p>
-        
+
         <h2 id="toast-timer"><span class="muted">3.</span> Changing the toast hide timer</h2>
         <p>You can use the property from the above option i.e. <span class="code">hideAfter</span> to change the timer after which toast gets hidden. You have to specify the timer in milliseconds</p>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -212,7 +212,7 @@
             <li><span class="code">slide</span> for slide up and down transitions</li>
             <li><span class="code">plain</span> simple show from and hide to corner transition</li>
         </ul>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -260,7 +260,7 @@
     allowToastClose: false
 })</code></pre>
         </div>
-    
+
         <h2 id="toasts-stack"><span class="muted">6.</span> Setting the toast stack</h2>
         <p><span class="code">stack</span> property can be used to specify how many maximum toasts you want to show at any point of time. By default this property is set to 5</p>
 
@@ -379,14 +379,14 @@
     stack: false
 })</code></pre>
         </div>
-    
+
         <p><strong>Note</strong> It should be noted that, once you change the position of toast by using the `position` property, you'll have to reset the position for the next toasts, if you want them to appear at their default position i.e. the bottom left corner. Or else, each new toast generated will be appearing at the last position i.e. where you displayed the last positioned toast. You can reset the toast position by.</p>
 
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast().reset('all');</code></pre>
         </div>
-    
+
         <h2 id="toasts-icons"><span class="muted">8.</span> Messages with icons</h2>
         <p><span class="code">icon</span> property can be used to specify the predefined types of toasts. Following are the predefined types:</p>
         <ul>
@@ -395,7 +395,7 @@
             <li><span class="code">error</span> generates a toast with error icon</li>
             <li><span class="code">success</span> generates a toast with success icon</li>
         </ul>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -404,7 +404,7 @@
     icon: 'warning'
 })</code></pre>
         </div>
-        
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -413,7 +413,7 @@
     icon: 'success'
 })</code></pre>
         </div>
-    
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -422,7 +422,7 @@
     icon: 'error'
 })</code></pre>
         </div>
-    
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -431,11 +431,11 @@
     icon: 'info'
 })</code></pre>
         </div>
-            
+
         <h2 id="toasts-bg-color"><span class="muted">9.</span> Background &amp; text color</h2>
         <p><span class="code">bgColor</span> property is used to specify the background color of the toast message. Default is '#444'</p>
         <p><span class="code">textColor</span> property is used to specify the text color of the toast message. Default is '#eee'</p>
-            
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -469,7 +469,7 @@
                 font-size: larger;
             }
         </style>
-            
+
         <div class="code-runner">
             <a href="#" class="eval-js">Run Code</a>
 <pre><code>$.toast({
@@ -478,7 +478,7 @@
     class: 'larger-font'
 })</code></pre>
         </div>
-            
+
         <h2 id="toasts-events"><span class="muted">11.</span> Toast Events</h2>
         <p>Toast exposes the following events for you to bind to whatever you want</p>
         <ul>
@@ -487,7 +487,7 @@
             <li><span class="code">beforeHide</span> will be triggered before the toast is about to hide</li>
             <li><span class="code">afterHidden</span> will be triggered right after the toast gets hidden</li>
         </ul>
-            
+
         <div class="code-runner">
             <a href="#" class="eval-js"><span class='hidden'>$.toast().reset('all');</span>Run Code</a>
 <pre><code>$.toast({
@@ -510,7 +510,7 @@
     }
 })</code></pre>
         </div>
-    
+
         <h2 id="updating-toasts"><span class="muted">12.</span> Updating Toasts</h2>
         <p>If you have a reference to a toast and want to update that, you can do so by calling the <span class="code">update</span> method on the instance.</p>
 
@@ -531,7 +531,7 @@ window.setTimeout(function(){
         text: 'Here is an information that changed to error',
         icon: 'error',
         hideAfter: false
-    });    
+    });
 }, 3000)
 
 </code></pre>
@@ -546,7 +546,7 @@ var myToast = $.toast('Some toast that needs to be removed.');
 myToast.reset(); // remove the toast "Some toast that needs to be removed"
 </code></pre>
         </div>
-        
+
         <p>If you do not have the reference to a specific toast and want to reset every toast, do the following:</p>
         <div class="code-runner">
 <pre><code>
@@ -554,7 +554,7 @@ $.toast().reset('all');
 </code></pre>
         </div>
 
-        
+
 
     <div class="plugin-options">
           <h1 id="toast-generator">Customize Plugin</h1>
@@ -603,7 +603,7 @@ $.toast().reset('all');
               <option value="false">No</option>
             </select>
           </p>
-  
+
           <p class="stack-length sub-item">
             <label for="stack-length">Stack Length </label>
             <input type="text" id="stack-length" class="stack-length" value="5">
@@ -644,7 +644,7 @@ $.toast().reset('all');
               </li>
             </ul>
           </div>
-          
+
           <p class="">
             <label for="text-align">Icon</label>
             <select name="icon-type" id="icon-type" class="text-align">
@@ -661,7 +661,7 @@ $.toast().reset('all');
                 <label for="toast-bg">Background Color</label>
                 <input type="color" id="toast-bg" class="toast-bg" value="#444444">
               </p>
-              
+
               <p>
                 <label for="toast-text-color">Text Color</label>
                 <input type="color" id="toast-text-color" class="toast-text-color" value="#eeeeee">
@@ -696,7 +696,7 @@ $.toast().reset('all');
             <label for="loader-bg">Loader Color</label>
             <input type="color" id="loader-bg" class="loader-bg" value="#9EC600">
           </p>
-          
+
 
           <div class="code-runner">
             <a href="#" class="btn generate-toast eval-js">Generate</a>
@@ -730,7 +730,7 @@ $.toast().reset('all');
 
     <script type="text/javascript">
         $(document).ready(function() {
-            
+
             $('.eval-js').on('click', function ( e ) {
                 e.preventDefault();
 
@@ -761,16 +761,16 @@ $.toast().reset('all');
             // You are about to see some extremely horrible code that can be MUCH MUCH improved,
             // I've knowlingly done it that way, please don't judge me based upon this ;)
             $(document).ready(function () {
-                
+
                 function generateCode () {
-                    var text = $('.plugin-options #toast-text').val(); 
-                    var heading = $('.plugin-options #toast-heading').val(); 
-                    var transition = $('.toast-transition').val(); 
-                    var allowToastClose = $('#allow-toast-close').val(); 
-                    var autoHide = $('#auto-hide-toast').val(); 
-                    var stackToasts = $('#stack-toasts').val(); 
-                    var toastPosition = $('#toast-position').val() 
-                    var toastBg = $('#toast-bg').val(); 
+                    var text = $('.plugin-options #toast-text').val();
+                    var heading = $('.plugin-options #toast-heading').val();
+                    var transition = $('.toast-transition').val();
+                    var allowToastClose = $('#allow-toast-close').val();
+                    var autoHide = $('#auto-hide-toast').val();
+                    var stackToasts = $('#stack-toasts').val();
+                    var toastPosition = $('#toast-position').val()
+                    var toastBg = $('#toast-bg').val();
                     var toastTextColor = $('#toast-text-color').val();
                     var toastIcon = $('#icon-type').val();
                     var textAlign = $('#text-align').val();
@@ -779,129 +779,129 @@ $.toast().reset('all');
                     var loaderBg = $('#loader-bg').val();
 
                     if ( text ) {
-                        $('.toast-text-line').show(); 
-                        $('.toast-text-line .toast-text').text( text ); 
+                        $('.toast-text-line').show();
+                        $('.toast-text-line .toast-text').text( text );
                     } else {
-                        $('.toast-text-line').hide() 
-                        $('.toast-text-line .toast-text').text(''); 
+                        $('.toast-text-line').hide()
+                        $('.toast-text-line .toast-text').text('');
                     };
 
                     if ( heading ) {
-                        $('.toast-heading-line').show(); 
-                        $('.toast-heading-line .toast-heading').text( heading ); 
+                        $('.toast-heading-line').show();
+                        $('.toast-heading-line .toast-heading').text( heading );
                     } else {
-                        $('.toast-heading-line').hide() 
-                        $('.toast-heading-line .toast-heading').text(''); 
-                    }; 
+                        $('.toast-heading-line').hide()
+                        $('.toast-heading-line .toast-heading').text('');
+                    };
 
                     if ( transition ) {
-                        $('.toast-transition-line').show() 
-                        $('.toast-transition-line .toast-transition').text( transition ); 
+                        $('.toast-transition-line').show()
+                        $('.toast-transition-line .toast-transition').text( transition );
                     } else {
-                        $('.toast-transition-line').hide(); 
-                        $('.toast-transition-line .toast-transition').text('fade'); 
-                    } 
+                        $('.toast-transition-line').hide();
+                        $('.toast-transition-line .toast-transition').text('fade');
+                    }
 
                     if ( allowToastClose ) {
-                        $('.toast-allowToastClose-line').show(); 
-                        $('.toast-allowToastClose-line .toast-allowToastClose').text( allowToastClose ); 
+                        $('.toast-allowToastClose-line').show();
+                        $('.toast-allowToastClose-line .toast-allowToastClose').text( allowToastClose );
                     } else {
-                        $('.toast-allowToastClose-line').hide(); 
-                        $('.toast-allowToastClose-line .toast-allowToastClose').text( false ); 
-                    } 
+                        $('.toast-allowToastClose-line').hide();
+                        $('.toast-allowToastClose-line .toast-allowToastClose').text( false );
+                    }
 
                     if ( autoHide && ( autoHide == 'false' ) ) {
-                        $('.toast-hideAfter-line').show(); 
-                        $('.toast-hideAfter-line .toast-hideAfter').text('false'); 
-                        $('.autohide-after').hide(); 
+                        $('.toast-hideAfter-line').show();
+                        $('.toast-hideAfter-line .toast-hideAfter').text('false');
+                        $('.autohide-after').hide();
                     } else {
-                        $('.toast-hideAfter-line').show(); 
-                        $('.toast-hideAfter-line .toast-hideAfter').text( $('#autohide-after').val() ? $('#autohide-after').val() : 3000 ); 
-                        $('.autohide-after').show(); 
-                    } 
+                        $('.toast-hideAfter-line').show();
+                        $('.toast-hideAfter-line .toast-hideAfter').text( $('#autohide-after').val() ? $('#autohide-after').val() : 3000 );
+                        $('.autohide-after').show();
+                    }
 
                     if ( stackToasts && stackToasts != 'true') {
-                        $('.toast-stackLength-line').show(); 
-                        $('.toast-stackLength-line .toast-stackLength').text( stackToasts ); 
-                        $('.stack-length').hide(); 
+                        $('.toast-stackLength-line').show();
+                        $('.toast-stackLength-line .toast-stackLength').text( stackToasts );
+                        $('.stack-length').hide();
                     } else {
-                        $('.stack-length').show(); 
-                        $('.toast-stackLength-line').show(); 
-                        $('.toast-stackLength-line .toast-stackLength').text( $('#stack-length').val() ? $('#stack-length').val() : 5 ); 
-                    } 
+                        $('.stack-length').show();
+                        $('.toast-stackLength-line').show();
+                        $('.toast-stackLength-line .toast-stackLength').text( $('#stack-length').val() ? $('#stack-length').val() : 5 );
+                    }
 
                     if ( toastPosition && ( toastPosition !== 'custom-position' ) ) {
-                        $('.toast-position-string-line').show(); 
-                        $('.custom-toast-position').hide(); 
-                        $('.toast-position-string-line .toast-position').text( toastPosition ); 
+                        $('.toast-position-string-line').show();
+                        $('.custom-toast-position').hide();
+                        $('.toast-position-string-line .toast-position').text( toastPosition );
                     } else {
-                        $('.toast-position-string-line').hide(); 
-                        $('.toast-position-string-line .toast-position').text(''); 
-                    } 
+                        $('.toast-position-string-line').hide();
+                        $('.toast-position-string-line .toast-position').text('');
+                    }
 
                     if ( toastPosition && ( toastPosition === 'custom-position' ) ) {
-                        $('.custom-toast-position').show(); 
-                        $('.toast-position-string-obj').show(); 
-                        var left = $('#left-position').val() ? $('#left-position').val() : 'auto'; 
-                        var right = $('#right-position').val() ? $('#right-position').val() : 'auto'; 
-                        var top = $('#top-position').val() ? $('#top-position').val() : 'auto'; 
-                        var bottom = $('#bottom-position').val() ? $('#bottom-position').val() : 'auto'; 
-                        $('.toast-position-string-obj .toast-position-left').text( ( left !== 'auto' ) ? left : "'" + left + "'" ); 
-                        $('.toast-position-string-obj .toast-position-right').text( ( right !== 'auto' ) ? right : "'" + right + "'" ); 
-                        $('.toast-position-string-obj .toast-position-top').text( ( top !== 'auto' ) ? top : "'" + top + "'" ); 
-                        $('.toast-position-string-obj .toast-position-bottom').text(  ( bottom !== 'auto' ) ? bottom : "'" + bottom + "'"  ); 
+                        $('.custom-toast-position').show();
+                        $('.toast-position-string-obj').show();
+                        var left = $('#left-position').val() ? $('#left-position').val() : 'auto';
+                        var right = $('#right-position').val() ? $('#right-position').val() : 'auto';
+                        var top = $('#top-position').val() ? $('#top-position').val() : 'auto';
+                        var bottom = $('#bottom-position').val() ? $('#bottom-position').val() : 'auto';
+                        $('.toast-position-string-obj .toast-position-left').text( ( left !== 'auto' ) ? left : "'" + left + "'" );
+                        $('.toast-position-string-obj .toast-position-right').text( ( right !== 'auto' ) ? right : "'" + right + "'" );
+                        $('.toast-position-string-obj .toast-position-top').text( ( top !== 'auto' ) ? top : "'" + top + "'" );
+                        $('.toast-position-string-obj .toast-position-bottom').text(  ( bottom !== 'auto' ) ? bottom : "'" + bottom + "'"  );
                     } else {
-                        $('.toast-position-string-obj').hide(); 
+                        $('.toast-position-string-obj').hide();
                         // $('.toast-position-string-obj toast-position').text('');
-                    } 
+                    }
 
                     if ( !toastIcon ) {
                         if ( toastBg ) {
-                            $('.toast-bgColor-line').show(); 
-                            $('.toast-bgColor-line .toast-bgColor').text( toastBg ); 
+                            $('.toast-bgColor-line').show();
+                            $('.toast-bgColor-line .toast-bgColor').text( toastBg );
                         } else {
-                            $('.toast-bgColor-line').hide(); 
-                            $('.toast-bgColor-line .toast-bgColor').text(''); 
-                        } 
+                            $('.toast-bgColor-line').hide();
+                            $('.toast-bgColor-line .toast-bgColor').text('');
+                        }
 
                         if ( toastTextColor ) {
-                            $('.toast-textColor-line').show(); 
-                            $('.toast-textColor-line .toast-textColor').text( toastTextColor ); 
+                            $('.toast-textColor-line').show();
+                            $('.toast-textColor-line .toast-textColor').text( toastTextColor );
                         } else {
-                            $('.toast-textColor-line').hide(); 
-                            $('.toast-textColor-line .toast-textColor').text(''); 
-                        } 
+                            $('.toast-textColor-line').hide();
+                            $('.toast-textColor-line .toast-textColor').text('');
+                        }
                     }
 
                     if ( textAlign ) {
-                        $('.toast-textAlign-line').show(); 
-                        $('.toast-textAlign-line .toast-textAlign').text( textAlign ); 
+                        $('.toast-textAlign-line').show();
+                        $('.toast-textAlign-line .toast-textAlign').text( textAlign );
                     } else {
-                        $('.toast-textAlign-line').hide(); 
-                        $('.toast-textAlign-line .toast-textAlign').text( ''); 
-                    } 
+                        $('.toast-textAlign-line').hide();
+                        $('.toast-textAlign-line .toast-textAlign').text( '');
+                    }
 
                     if (loader == 'false') {
                         $('.toast-textLoader').html('false');
                     } else {
                         $('.toast-textLoader').html('true');
                     }
-                    
+
                     if (loaderBg) {
                         $('.toast-textLoaderBg').html(loaderBg);
                     }
 
                     if ( toastEvents == 'false' ) {
-                        $('.toast-beforeShow-line').hide(); 
-                        $('.toast-afterShown-line').hide(); 
-                        $('.toast-beforeHide-line').hide(); 
-                        $('.toast-afterHidden-line').hide(); 
+                        $('.toast-beforeShow-line').hide();
+                        $('.toast-afterShown-line').hide();
+                        $('.toast-beforeHide-line').hide();
+                        $('.toast-afterHidden-line').hide();
                     } else {
-                        $('.toast-beforeShow-line').show(); 
-                        $('.toast-afterShown-line').show(); 
-                        $('.toast-beforeHide-line').show(); 
-                        $('.toast-afterHidden-line').show(); 
-                    } 
+                        $('.toast-beforeShow-line').show();
+                        $('.toast-afterShown-line').show();
+                        $('.toast-beforeHide-line').show();
+                        $('.toast-afterHidden-line').show();
+                    }
                 }
 
                 $('#top-position').on('change', function () { $('#bottom-position').val('auto'); });
@@ -923,63 +923,63 @@ $.toast().reset('all');
 
                     if ( $('.toast-text-line').is(':visible') ) {
                         options.text = $('.toast-text-line .toast-text').text();
-                    } 
+                    }
 
                     if ( $('.toast-heading-line').is(':visible') ) {
-                        options.heading = $('.toast-heading').text(); 
-                    }; 
+                        options.heading = $('.toast-heading').text();
+                    };
 
                     if ( $('.toast-transition-line').is(':visible') ) {
-                        options.showHideTransition = $('.toast-transition-line .toast-transition').text(); 
-                    }; 
+                        options.showHideTransition = $('.toast-transition-line .toast-transition').text();
+                    };
 
                     if ( $('.toast-allowToastClose-line').is(':visible') ) {
-                        options.allowToastClose = ( $('.toast-allowToastClose-line .toast-allowToastClose').text() === 'true' ) ? true : false; 
-                    }; 
+                        options.allowToastClose = ( $('.toast-allowToastClose-line .toast-allowToastClose').text() === 'true' ) ? true : false;
+                    };
 
                     if ( $('.toast-hideAfter-line').is(':visible') ) {
-                        options.hideAfter = parseInt($('.toast-hideAfter-line .toast-hideAfter').text(), 10) || false; 
-                    }; 
+                        options.hideAfter = parseInt($('.toast-hideAfter-line .toast-hideAfter').text(), 10) || false;
+                    };
 
                     if ( $('.toast-stackLength-line').is(':visible') ) {
-                        options.stack = parseInt($('.toast-stackLength-line .toast-stackLength').text(), 10) || false; 
-                    }; 
+                        options.stack = parseInt($('.toast-stackLength-line .toast-stackLength').text(), 10) || false;
+                    };
 
                     if ( $('.toast-position-string-line').is(':visible') ) {
-                        options.position = $('.toast-position-string-line .toast-position').text(); 
-                    }; 
+                        options.position = $('.toast-position-string-line .toast-position').text();
+                    };
 
                     if ( $('.toast-position-string-obj').is(':visible') ) {
-                        options.position = {}; 
-                        options.position.left =  parseFloat( $('.toast-position .toast-position-left').text() ) || 'auto'; 
-                        options.position.right =  parseFloat( $('.toast-position .toast-position-right').text() ) || 'auto'; 
-                        options.position.top =  parseFloat( $('.toast-position .toast-position-top').text() ) || 'auto'; 
-                        options.position.bottom =  parseFloat( $('.toast-position .toast-position-bottom').text() ) || 'auto'; 
-                    }; 
+                        options.position = {};
+                        options.position.left =  parseFloat( $('.toast-position .toast-position-left').text() ) || 'auto';
+                        options.position.right =  parseFloat( $('.toast-position .toast-position-right').text() ) || 'auto';
+                        options.position.top =  parseFloat( $('.toast-position .toast-position-top').text() ) || 'auto';
+                        options.position.bottom =  parseFloat( $('.toast-position .toast-position-bottom').text() ) || 'auto';
+                    };
 
                     if ( $('.toast-icon-line').is(':visible') ) {
                         options.icon = $('.toast-icon-line .toast-icon').text();
                     };
 
                     if ( $('.toast-bgColor-line').is(':visible') ) {
-                        options.bgColor = $('#toast-bg').val(); 
-                    }; 
+                        options.bgColor = $('#toast-bg').val();
+                    };
 
                     if ( $('.toast-text-color').is(':visible') ) {
-                        options.textColor = $('#toast-text-color').val(); 
-                    }; 
+                        options.textColor = $('#toast-text-color').val();
+                    };
 
                     if ( $("#text-align").is(':visible') ) {
-                        options.textAlign = $('#text-align').val(); 
+                        options.textAlign = $('#text-align').val();
                     };
 
                     options.loader = $('.toast-textLoader').html() === 'false' ? false : true;
                     options.loaderBg = $('.toast-textLoaderBg').html();
 
-                    $.toast( options ); 
+                    $.toast( options );
                 }
 
-                generateCode(); 
+                generateCode();
             });
         });
     </script>
