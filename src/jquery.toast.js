@@ -1,52 +1,49 @@
 /*!
 jQuery toast plugin v.1.4.0
-Copyright (C) 2015-2017 Kamran Ahmed <http://kamranahmed.info>
+Copyright (C) 2015-2018 Kamran Ahmed <http://kamranahmed.info>
 License MIT
 */
 /*
 options and their default values:
- text: '', one, or array of, string(s), text or markup
- heading: '', string or html
- showHideTransition: 'fade', type of transition: 'fade', 'slide' or anything else
- allowToastClose: true, whether to support click-to-close
+ text: '', string or string(s) array, text or markup
+ heading: '', string, text or markup
+ showHideTransition: 'fade', type of display transition: 'fade', 'slide' or anything else
+ allowToastClose: true, whether to enable click-to-close
  hideAfter: 5000,  dialog lifetime (mS) or false for sticky
  loader: true, whether to display lifetime progress bar
- loaderBg: '#9EC600', color of lifetime bar
- stack: 5, maximum no. of contemporary dialogs
- position: 'bottom-left', dialog position relative to the refer
+ loaderBg: false, CSS property, or false progress bar colour
+ stack: 5, maximum no. of contemporary toasts, or 0
+ position: 'bottom-left', defines toast position relative to the window, one of
+         'bottom-left','bottom-right','top-right','top-left','bottom-center','top-center','mid-center'
  bgColor: false, CSS property, or false
  textColor: false, CSS property, or false
  textAlign: 'left', CSS property, or false
- icon: false, status-indicator, one of 'success', 'error', 'info', 'warning' (used to suffix applied class "toast-icon-")
-         or else any markup which represents an icon e.g. <img attrs ... />,
-         may be nested e.g. inside <span attrs ...><img attrs ...  /></span> 
- closeicon: '&times;', string or markup which displays something clickable
-         e.g. '&times;', 'CLOSE', <span attrs ...><img attrs ...  /></span>
- xclass: false, user-specified class to be applied to the div containing displayed elements
- drag: false, if sticky (i.e. hideAfter not applied), whether to create a draggable dialog
- refer: null, reference-element for the dialog, defaults to window
- beforeShow: null, optional callable, called before dialog is shown, argument is the dialog div object
- afterShown: null, optional callable, called after dialog is shown, argument is the dialog div object
- beforeHide: null, optional callable, called before dialog is hidden, argument is the dialog div object
- afterHidden: null, optional callable, called after dialog is hidden, argument is the dialog div object
- onClick: null optional callable to process any click anywhere in the dialog (i.e. not just close)
+ icon: false, status-indicator, one of 'success', 'error', 'info', 'warning'
+         or any markup which represents an icon e.g. <img attrs ... />,
+         or <span attrs ...><img attrs ... /></span> 
+ closeicon: '&times;', text or markup which displays something clickable
+         e.g. 'CLOSE', '&times;', <span attrs ...><img attrs ...  /></span>
+ myclass: false, toast-specific class to be applied
+ beforeShow: false, callable, called before dialog is shown, argument is the dialog div object
+ afterShown: false, callable, called after dialog is shown, argument is the dialog div object
+ beforeHide: false, callable, called before dialog is hidden, argument is the dialog div object
+ afterHidden: false, callable, called after dialog is hidden, argument is the dialog div object
+ onClick: false callable, called after any click anywhere in the dialog (i.e. not just close)
 
 classes:
-'toast-wrap' applied to div containing all created toasts
-'toast-single' applied to each div containing a toast
-settings.position, in 'bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'
-settings.xclass applied to the div containing the toast to which this setting applies
-'toast-has-icon' applied to each div containing a toast and which has a type-indicator icon
-'toast-icon-' + 'success', 'error', 'info', 'warning' applied to the type-indicator icon
-'toast-loader' loader-container span identifier
-'toast-loaded' applied to loader-container if loader is true
-'toast-heading' applied to div containing markup and closer (if any)
-'toast-close' applied to settings.closeicon (whatever that is)
-'toast-ul' applied to ul for multi-row message
-'toast-li' applied to each li in multi-row message
+'jqtoast' applied to each created div containing toast Elements
+settings.position applied to each toast-div
+settings.myclass applied to the toast-div to which these settings apply
+'jqt-has-icon' applied to each toast-div which has a type-indicator icon
+'jqt-icon-' + 'success', 'error', 'info', 'warning' applied to the type-indicator icon
+'jqt-loader' loader-container span identifier
+'jqt-loaded' applied to loader-container if loader is true
+'jqt-heading' applied to a div containing markup and closer (if any)
+'jqt-close' applied to settings.closeicon (whatever and wherever that is)
 
 ids:
-'toast-item-' + i the li's
+'jqt-wrap' applied to div containing all created toasts
+'jqt-item-' + i the li's
 */
 if ( typeof Object.create !== 'function' ) {
     Object.create = function( obj ) {
@@ -56,12 +53,11 @@ if ( typeof Object.create !== 'function' ) {
     };
 }
 
-(function( $, window, document ) {
+;(function( $, window, document, undefined ) {
     "$:nomunge";
     "use strict";
 
     var Toast = {
-
         _positionClasses : ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'],
         _defaultIcons : ['success', 'error', 'info', 'warning'],
 
@@ -83,26 +79,29 @@ if ( typeof Object.create !== 'function' ) {
         process: function () {
             this.setup();
             this.addToDom();
-            this.position();
             this.bindToast();
+            this.position();
             this.animate();
         },
 
         setup: function () {
 
             this._toastEl = this._toastEl || $('<div/>', {
-                "class" : "toast-single"
+                'class' : 'jqtoast',
+                 role : 'alert',
+                'aria-live' : 'polite'
             });
             this._toastEl.data('Toastob', this);
 
             var _toastContent = '';
 
-            if ( this.options.loader ) {
-                _toastContent += '<span class="toast-loader"></span>';
+            // For the loader on top
+            if ( this.options.loader && this.options.hideAfter ) {
+                _toastContent += '<span class="jqt-loader"></span>';
             }
 
             if ( this.options.heading ) {
-                _toastContent +='<div class="toast-heading">' + this.options.heading;
+                _toastContent +='<div class="jqt-heading">' + this.options.heading;
             }
 
             if ( this.options.allowToastClose ) {
@@ -112,7 +111,7 @@ if ( typeof Object.create !== 'function' ) {
                 } else {
                     icon = '&times;';
                 }
-                _toastContent += '<span class="toast-close">' + icon + '</span>';
+                _toastContent += '<span class="jqt-close">' + icon + '</span>';
             }
 
             if ( this.options.heading ) {
@@ -120,9 +119,9 @@ if ( typeof Object.create !== 'function' ) {
             }
 
             if ( this.options.text instanceof Array ) {
-                _toastContent += '<ul class="toast-ul">';
+                _toastContent += '<ul>';
                 for (var i = 0; i < this.options.text.length; i++) {
-                    _toastContent += '<li class="toast-li" id="toast-item-' + i + '">' + this.options.text[i] + '</li>';
+                    _toastContent += '<li id="jqt-item-' + i + '">' + this.options.text[i] + '</li>';
                 }
                 _toastContent += '</ul>';
 
@@ -145,67 +144,49 @@ if ( typeof Object.create !== 'function' ) {
             }
 
             if ( this.options.icon ) {
-                this._toastEl.addClass('toast-has-icon');
+                this._toastEl.addClass('jqt-has-icon');
 
                 if ( this._defaultIcons.indexOf(this.options.icon) !== -1 ) {
-                    this._toastEl.addClass('toast-icon-' + this.options.icon);
+                    this._toastEl.addClass('jqt-icon-' + this.options.icon);
                 }
             }
 
-            if ( this.options.xclass ) {
-                this._toastEl.addClass(this.options.xclass);
+            if ( this.options.myclass ) {
+                this._toastEl.addClass(this.options.myclass);
             }
+
+            this._toastEl.hide();
         },
 
         position: function () {
 
-            var refer, left, top, bottom;
-
-            if ( this.options.refer && this.options.refer instanceof Element ) {
-                refer = this.options.refer;
-            } else {
-                refer = window;
-            } 
             if ( ( typeof this.options.position === 'string' ) && ( this._positionClasses.indexOf(this.options.position) !== -1 ) ) {
 
+                this._toastEl.addClass( this.options.position );
+
                 if ( this.options.position === 'bottom-center' ) {
-                    left = Math.max (20, ($(refer).outerWidth() - this._container.outerWidth()) / 2);
-                    top = Math.min (window.outerHeight() - 20, $(refer).bottom() + this._container.outerHeight());
-                    this._container.css({
-                        left: left,
-                        top: top
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
                     });
                 } else if ( this.options.position === 'top-center' ) {
-                    left = Math.max (20, ($(refer).outerWidth() - this._container.outerWidth()) / 2);
-                    top = Math.max (20, ($(refer).top() - this._container.outerHeight()));
-                    this._container.css({
-                        left: left,
-                        top: top
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
                     });
                 } else if ( this.options.position === 'mid-center' ) {
-                    left = Math.max (20, ($(refer).outerWidth() - this._container.outerWidth()) / 2);
-                    top = Math.max (20, ($(refer).outerHeight() - this._container.outerHeight()) / 2);
-                    this._container.css({
-                        left: left,
-                        top: top
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
+                        top: ( $(window).outerHeight() - this._toastEl.outerHeight() ) /2
                     });
-                } else {
-                    this._container.addClass( this.options.position );
                 }
             } else if ( typeof this.options.position === 'object' ) {
-                this._container.css({
+                this._toastEl.css({
                     top : this.options.position.top ? this.options.position.top : 'auto',
                     bottom : this.options.position.bottom ? this.options.position.bottom : 'auto',
                     left : this.options.position.left ? this.options.position.left : 'auto',
                     right : this.options.position.right ? this.options.position.right : 'auto'
                 });
             } else {
-//                this._container.addClass( 'bottom-left' );
-                this._container.css({
-                   //bottom-left
-                   left: 20,
-                   bottom: 20
-                });
+                this._toastEl.addClass( 'bottom-left' );
             }
         },
 
@@ -222,7 +203,7 @@ if ( typeof Object.create !== 'function' ) {
 
             var that = this;
 
-            this._toastEl.find('.toast-close').on('click', function ( e ) {
+            this._toastEl.find('.jqt-close').on('click', function ( e ) {
 
                 e.preventDefault();
 
@@ -248,53 +229,47 @@ if ( typeof Object.create !== 'function' ) {
 
         addToDom: function () {
 
-             var _container = $('.toast-wrap');
+             var _container = $('#jqt-wrap');
 
              if ( _container.length === 0 ) {
 
-                _container = $('<div/>', {
-                    "class" : "toast-wrap",
-                    role : "alert",
-                    "aria-live" : "polite"
+                _container = $('<div/>',{
+                    id : 'jqt-wrap'
                 });
 
                 $('body').append( _container );
 
              } else if ( !this.options.stack || isNaN( parseInt(this.options.stack, 10) ) ) {
                 _container.empty();
+             } else {
+                 _container.find('.toast-single:hidden').remove();
              }
-
-             _container.find('.toast-single:hidden').remove();
 
              _container.append( this._toastEl );
 
-            this._toastEl.hide();
-
             if ( this.options.stack && !isNaN( parseInt( this.options.stack ), 10 ) ) {
 
-                var _prevToastCount = _container.find('.toast-single').length,
+                var _prevToastCount = _container.find('.jqtoast').length,
                     _extToastCount = _prevToastCount - this.options.stack;
 
                 if ( _extToastCount > 0 ) {
-                    $('.toast-wrap').find('.toast-single').slice(0, _extToastCount).remove();
+                    $('#jqt-wrap').find('.jqtoast').slice(0, _extToastCount).remove();
                 }
 
             }
-
-            this._container = _container;
         },
 
         canAutoHide: function () {
-            return ( this.options.hideAfter !== false ) && !isNaN( parseInt( this.options.hideAfter, 10 ) );
+            return ( this.options.hideAfter ) && !isNaN( parseInt( this.options.hideAfter, 10 ) );
         },
 
         processLoader: function () {
-            // Show the loader only, if auto-hide is on and loader is demanded
-            if (!this.canAutoHide() || this.options.loader === false) {
+            // Show the loader only if auto-hide is on and loader is demanded
+            if (!this.canAutoHide() || !this.options.loader) {
                 return false;
             }
 
-            var loader = this._toastEl.find('.toast-loader'),
+            var loader = this._toastEl.find('.jqt-loader'),
             // 400 mS is jquery's default duration for fade/slide
             // Divide by 1000 for mS to S conversion
                 transitionTime = (this.options.hideAfter - 400) / 1000 + 's',
@@ -308,14 +283,14 @@ if ( typeof Object.create !== 'function' ) {
                      'transition:width ' + transitionTime + ' ease-in;' +
                      'background-color:' + loaderBg + ';';
 
-            loader.attr('style', style).addClass('toast-loaded');
+            loader.attr('style', style).addClass('jqt-loaded');
         },
 
         postShow: function () {
 
             var that = $(this).data('Toastob');
 
-            if (that.options.loader !== false) {
+            if (that.options.loader && that.options.hideAfter ) {
                 that.processLoader();
             }
             if (typeof that.options.afterShown === 'function') {
@@ -329,17 +304,22 @@ if ( typeof Object.create !== 'function' ) {
                this.options.beforeShow(this._toastEl);
             }
 
-            if ( this.options.showHideTransition.toLowerCase() === 'fade' ) {
-                this._toastEl.fadeIn(this.postShow);
-            } else if ( this.options.showHideTransition.toLowerCase() === 'slide' ) {
-                this._toastEl.slideDown(this.postShow);
-            } else {
-                this._toastEl.show(this.postShow);
+            var trans = this.options.showHideTransition.toLowerCase();
+
+            switch ( trans ) {
+                case 'fade':
+                    this._toastEl.fadeIn(this.postShow);
+                    break;
+                case 'slide':
+                    this._toastEl.slideDown(this.postShow);
+                    break;
+                default:
+                    this._toastEl.show(this.postShow);
             }
 
             if (this.canAutoHide()) {
 
-               var that = this;
+                var that = this;
 
                 window.setTimeout(function(){
 
@@ -347,22 +327,27 @@ if ( typeof Object.create !== 'function' ) {
                        that.options.beforeHide(that._toastEl);
                     }
 
-                    if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
-                        that._toastEl.fadeOut(that.postHide);
-                    } else if ( that.options.showHideTransition.toLowerCase() === 'slide' ) {
-                        that._toastEl.slideUp(that.postHide);
-                    } else {
-                        that._toastEl.hide(that.postHide);
+                    switch ( trans ) {
+                        case 'fade':
+                            that._toastEl.fadeOut(that.postHide);
+                            break;
+                        case 'slide':
+                            that._toastEl.slideUp(that.postHide);
+                            break;
+                        default:
+                            that._toastEl.hide(that.postHide);
                     }
 
                 }, this.options.hideAfter);
             }
         },
 
+        /* public methods */
+
         reset: function ( resetWhat ) {
 
             if ( resetWhat === 'all' ) {
-                $('.toast-wrap').remove();
+                $('#jqt-wrap').remove();
             } else {
                 this._toastEl.remove();
             }
@@ -376,7 +361,7 @@ if ( typeof Object.create !== 'function' ) {
         },
 
         close: function() {
-            this._toastEl.find('.toast-close').click();
+            this._toastEl.find('.jqt-close').click();
         }
     };
 
@@ -415,14 +400,16 @@ if ( typeof Object.create !== 'function' ) {
         textAlign: 'left',
         icon: false,
         closeicon: '&times;',
-        xclass: false,
-        drag: false,
-        refer: null,
-        beforeShow: null,
-        afterShown: null,
-        beforeHide: null,
-        afterHidden: null,
-        onClick: null
+        myclass: false,
+        beforeShow: false,
+        afterShown: false,
+        beforeHide: false,
+        afterHidden: false,
+        onClick: false
+    };
+
+    $.toast.clear = function( ) {
+       for(var i in $.toast.options) $.toast.options[i] = false;
     };
 
 })( jQuery, window, document );
