@@ -1,7 +1,49 @@
 /*!
 jQuery toast plugin v.1.4.0
-Copyright (C) 2015-2017 Kamran Ahmed <http://kamranahmed.info>
+Copyright (C) 2015-2018 Kamran Ahmed <http://kamranahmed.info>
 License MIT
+*/
+/*
+options and their default values:
+ text: '', string or string(s) array, text or markup
+ heading: '', string, text or markup
+ showHideTransition: 'fade', type of display transition: 'fade', 'slide' or anything else
+ allowToastClose: true, whether to enable click-to-close
+ hideAfter: 5000,  dialog lifetime (mS) or false for sticky
+ loader: true, whether to display lifetime progress bar
+ loaderBg: false, CSS property, or false progress bar colour
+ stack: 5, maximum no. of contemporary toasts, or 0
+ position: 'bottom-left', defines toast position relative to the window, one of
+         'bottom-left','bottom-right','top-right','top-left','bottom-center','top-center','mid-center'
+ bgColor: false, CSS property, or false
+ textColor: false, CSS property, or false
+ textAlign: 'left', CSS property, or false
+ icon: false, status-indicator, one of 'success', 'error', 'info', 'warning'
+         or any markup which represents an icon e.g. <img attrs ... />,
+         or <span attrs ...><img attrs ... /></span> 
+ closeicon: '&times;', text or markup which displays something clickable
+         e.g. 'CLOSE', '&times;', <span attrs ...><img attrs ...  /></span>
+ myclass: false, toast-specific class to be applied
+ beforeShow: false, callable, called before dialog is shown, argument is the dialog div object
+ afterShown: false, callable, called after dialog is shown, argument is the dialog div object
+ beforeHide: false, callable, called before dialog is hidden, argument is the dialog div object
+ afterHidden: false, callable, called after dialog is hidden, argument is the dialog div object
+ onClick: false callable, called after any click anywhere in the dialog (i.e. not just close)
+
+classes:
+'jqtoast' applied to each created div containing toast Elements
+settings.position applied to each toast-div
+settings.myclass applied to the toast-div to which these settings apply
+'jqt-has-icon' applied to each toast-div which has a type-indicator icon
+'jqt-icon-' + 'success', 'error', 'info', 'warning' applied to the type-indicator icon
+'jqt-loader' loader-container span identifier
+'jqt-loaded' applied to loader-container if loader is true
+'jqt-heading' applied to a div containing markup and closer (if any)
+'jqt-close' applied to settings.closeicon (whatever and wherever that is)
+
+ids:
+'jqt-wrap' applied to div containing all created toasts
+'jqt-item-' + i the li's
 */
 if ( typeof Object.create !== 'function' ) {
     Object.create = function( obj ) {
@@ -11,12 +53,11 @@ if ( typeof Object.create !== 'function' ) {
     };
 }
 
-(function( $, window ) { "$:nomunge"
-
+;(function( $, window, document, undefined ) {
+    "$:nomunge";
     "use strict";
 
     var Toast = {
-
         _positionClasses : ['bottom-left', 'bottom-right', 'top-right', 'top-left', 'bottom-center', 'top-center', 'mid-center'],
         _defaultIcons : ['success', 'error', 'info', 'warning'],
 
@@ -38,19 +79,30 @@ if ( typeof Object.create !== 'function' ) {
         process: function () {
             this.setup();
             this.addToDom();
-            this.position();
             this.bindToast();
+            this.position();
             this.animate();
         },
 
         setup: function () {
 
+            this._toastEl = this._toastEl || $('<div/>', {
+                'class' : 'jqtoast',
+                 role : 'alert',
+                'aria-live' : 'polite'
+            });
+            this._toastEl.data('Toastob', this);
+
             var _toastContent = '';
 
-            this._toastEl = this._toastEl || $('<div class="jq-toast-single"></div>');
-
             // For the loader on top
-            _toastContent += '<span class="jq-toast-loader"></span>';
+            if ( this.options.loader && this.options.hideAfter ) {
+                _toastContent += '<span class="jqt-loader"></span>';
+            }
+
+            if ( this.options.heading ) {
+                _toastContent +='<div class="jqt-heading">' + this.options.heading;
+            }
 
             if ( this.options.allowToastClose ) {
                 var icon;
@@ -59,25 +111,21 @@ if ( typeof Object.create !== 'function' ) {
                 } else {
                     icon = '&times;';
                 }
-                _toastContent += '<span class="jq-toast-close">' + icon + '</span>';
+                _toastContent += '<span class="jqt-close">' + icon + '</span>';
+            }
+
+            if ( this.options.heading ) {
+                _toastContent += '</div>';
             }
 
             if ( this.options.text instanceof Array ) {
-
-                if ( this.options.heading ) {
-                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
-                }
-
-                _toastContent += '<ul class="jq-toast-ul">';
+                _toastContent += '<ul>';
                 for (var i = 0; i < this.options.text.length; i++) {
-                    _toastContent += '<li class="jq-toast-li" id="jq-toast-item-' + i + '">' + this.options.text[i] + '</li>';
+                    _toastContent += '<li id="jqt-item-' + i + '">' + this.options.text[i] + '</li>';
                 }
                 _toastContent += '</ul>';
 
             } else {
-                if ( this.options.heading ) {
-                    _toastContent +='<div class="jq-toast-heading">' + this.options.heading + '</div>';
-                }
                 _toastContent += this.options.text;
             }
 
@@ -96,49 +144,58 @@ if ( typeof Object.create !== 'function' ) {
             }
 
             if ( this.options.icon ) {
-                this._toastEl.addClass('jq-has-icon');
+                this._toastEl.addClass('jqt-has-icon');
 
                 if ( this._defaultIcons.indexOf(this.options.icon) !== -1 ) {
-                    this._toastEl.addClass('jq-icon-' + this.options.icon);
+                    this._toastEl.addClass('jqt-icon-' + this.options.icon);
                 }
             }
 
-            if ( this.options.xclass ) {
-                this._toastEl.addClass(this.options.xclass);
+            if ( this.options.myclass ) {
+                this._toastEl.addClass(this.options.myclass);
             }
+
+            this._toastEl.hide();
         },
 
         position: function () {
+
             if ( ( typeof this.options.position === 'string' ) && ( this._positionClasses.indexOf(this.options.position) !== -1 ) ) {
 
+                this._toastEl.addClass( this.options.position );
+
                 if ( this.options.position === 'bottom-center' ) {
-                    this._container.css({
-                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
-                        bottom: 20
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
                     });
                 } else if ( this.options.position === 'top-center' ) {
-                    this._container.css({
-                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
-                        top: 20
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
                     });
                 } else if ( this.options.position === 'mid-center' ) {
-                    this._container.css({
-                        left: ( $(window).outerWidth() / 2 ) - this._container.outerWidth()/2,
-                        top: ( $(window).outerHeight() / 2 ) - this._container.outerHeight()/2
+                    this._toastEl.css({
+                        left: ( $(window).outerWidth() - this._toastEl.outerWidth() ) / 2,
+                        top: ( $(window).outerHeight() - this._toastEl.outerHeight() ) /2
                     });
-                } else {
-                    this._container.addClass( this.options.position );
                 }
-
             } else if ( typeof this.options.position === 'object' ) {
-                this._container.css({
+                this._toastEl.css({
                     top : this.options.position.top ? this.options.position.top : 'auto',
                     bottom : this.options.position.bottom ? this.options.position.bottom : 'auto',
                     left : this.options.position.left ? this.options.position.left : 'auto',
                     right : this.options.position.right ? this.options.position.right : 'auto'
                 });
             } else {
-                this._container.addClass( 'bottom-left' );
+                this._toastEl.addClass( 'bottom-left' );
+            }
+        },
+
+        postHide: function () {
+
+            var that = $(this).data('Toastob');
+            
+            if (typeof that.options.afterHidden === 'function') {
+                that.options.afterHidden(this);
             }
         },
 
@@ -146,54 +203,22 @@ if ( typeof Object.create !== 'function' ) {
 
             var that = this;
 
-            this._toastEl.on('afterShown', function () {
-                that.processLoader();
-            });
-
-            this._toastEl.find('.jq-toast-close').on('click', function ( e ) {
+            this._toastEl.find('.jqt-close').on('click', function ( e ) {
 
                 e.preventDefault();
 
-                that._toastEl.trigger('beforeHide');
+                if ( typeof that.options.beforeHide === 'function' ) {
+                    that.options.beforeHide(that._toastEl);
+                }
 
                 if( that.options.showHideTransition === 'fade') {
-                    that._toastEl.fadeOut(function () {
-                        that._toastEl.trigger('afterHidden');
-                    });
+                    that._toastEl.fadeOut(that.postHide);
                 } else if ( that.options.showHideTransition === 'slide' ) {
-                    that._toastEl.slideUp(function () {
-                        that._toastEl.trigger('afterHidden');
-                    });
+                    that._toastEl.slideUp(that.postHide);
                 } else {
-                    that._toastEl.hide(function () {
-                        that._toastEl.trigger('afterHidden');
-                    });
+                    that._toastEl.hide(that.postHide);
                 }
             });
-
-            if ( typeof this.options.beforeShow === 'function' ) {
-                this._toastEl.on('beforeShow', function () {
-                    that.options.beforeShow(that._toastEl);
-                });
-            }
-
-            if ( typeof this.options.afterShown === 'function' ) {
-                this._toastEl.on('afterShown', function () {
-                    that.options.afterShown(that._toastEl);
-                });
-            }
-
-            if ( typeof this.options.beforeHide === 'function' ) {
-                this._toastEl.on('beforeHide', function () {
-                    that.options.beforeHide(that._toastEl);
-                });
-            }
-
-            if ( typeof this.options.afterHidden === 'function' ) {
-                this._toastEl.on('afterHidden', function () {
-                    that.options.afterHidden(that._toastEl);
-                });
-            }
 
             if ( typeof this.options.onClick === 'function' ) {
                 this._toastEl.on('click', function () {
@@ -204,53 +229,53 @@ if ( typeof Object.create !== 'function' ) {
 
         addToDom: function () {
 
-             var _container = $('.jq-toast-wrap');
+             var _container = $('#jqt-wrap');
 
              if ( _container.length === 0 ) {
 
-                _container = $('<div class="jq-toast-wrap" role="alert" aria-live="polite"></div>');
+                _container = $('<div/>',{
+                    id : 'jqt-wrap'
+                });
 
                 $('body').append( _container );
 
              } else if ( !this.options.stack || isNaN( parseInt(this.options.stack, 10) ) ) {
                 _container.empty();
+             } else {
+                 _container.find('.toast-single:hidden').remove();
              }
-
-             _container.find('.jq-toast-single:hidden').remove();
 
              _container.append( this._toastEl );
 
             if ( this.options.stack && !isNaN( parseInt( this.options.stack ), 10 ) ) {
 
-                var _prevToastCount = _container.find('.jq-toast-single').length,
+                var _prevToastCount = _container.find('.jqtoast').length,
                     _extToastCount = _prevToastCount - this.options.stack;
 
                 if ( _extToastCount > 0 ) {
-                    $('.jq-toast-wrap').find('.jq-toast-single').slice(0, _extToastCount).remove();
+                    $('#jqt-wrap').find('.jqtoast').slice(0, _extToastCount).remove();
                 }
 
             }
-
-            this._container = _container;
         },
 
         canAutoHide: function () {
-            return ( this.options.hideAfter !== false ) && !isNaN( parseInt( this.options.hideAfter, 10 ) );
+            return ( this.options.hideAfter ) && !isNaN( parseInt( this.options.hideAfter, 10 ) );
         },
 
         processLoader: function () {
-            // Show the loader only, if auto-hide is on and loader is demanded
-            if (!this.canAutoHide() || this.options.loader === false) {
+            // Show the loader only if auto-hide is on and loader is demanded
+            if (!this.canAutoHide() || !this.options.loader) {
                 return false;
             }
 
-            var loader = this._toastEl.find('.jq-toast-loader'),
-            // 400 is the default time that jquery uses for fade/slide
-            // Divide by 1000 for milliseconds to seconds conversion
+            var loader = this._toastEl.find('.jqt-loader'),
+            // 400 mS is jquery's default duration for fade/slide
+            // Divide by 1000 for mS to S conversion
                 transitionTime = (this.options.hideAfter - 400) / 1000 + 's',
                 loaderBg = this.options.loaderBg,
-
                 style = loader.attr('style') || '';
+
             style = style.substring(0, style.indexOf('-webkit-transition')); // Remove the last transition definition
 
             style += '-webkit-transition:width ' + transitionTime + ' ease-in;' +
@@ -258,62 +283,71 @@ if ( typeof Object.create !== 'function' ) {
                      'transition:width ' + transitionTime + ' ease-in;' +
                      'background-color:' + loaderBg + ';';
 
+            loader.attr('style', style).addClass('jqt-loaded');
+        },
 
-            loader.attr('style', style).addClass('jq-toast-loaded');
+        postShow: function () {
+
+            var that = $(this).data('Toastob');
+
+            if (that.options.loader && that.options.hideAfter ) {
+                that.processLoader();
+            }
+            if (typeof that.options.afterShown === 'function') {
+               that.options.afterShown(this);
+            }
         },
 
         animate: function () {
 
-            var that = this;
+            if ( typeof this.options.beforeShow === 'function' ) {
+               this.options.beforeShow(this._toastEl);
+            }
 
-            this._toastEl.hide();
+            var trans = this.options.showHideTransition.toLowerCase();
 
-            this._toastEl.trigger('beforeShow');
-
-            if ( this.options.showHideTransition.toLowerCase() === 'fade' ) {
-                this._toastEl.fadeIn(function ( ){
-                    that._toastEl.trigger('afterShown');
-                });
-            } else if ( this.options.showHideTransition.toLowerCase() === 'slide' ) {
-                this._toastEl.slideDown(function ( ){
-                    that._toastEl.trigger('afterShown');
-                });
-            } else {
-                this._toastEl.show(function ( ){
-                    that._toastEl.trigger('afterShown');
-                });
+            switch ( trans ) {
+                case 'fade':
+                    this._toastEl.fadeIn(this.postShow);
+                    break;
+                case 'slide':
+                    this._toastEl.slideDown(this.postShow);
+                    break;
+                default:
+                    this._toastEl.show(this.postShow);
             }
 
             if (this.canAutoHide()) {
 
-                that = this;
+                var that = this;
 
                 window.setTimeout(function(){
 
-                    that._toastEl.trigger('beforeHide');
+                    if ( typeof that.options.beforeHide === 'function' ) {
+                       that.options.beforeHide(that._toastEl);
+                    }
 
-                    if ( that.options.showHideTransition.toLowerCase() === 'fade' ) {
-                        that._toastEl.fadeOut(function () {
-                            that._toastEl.trigger('afterHidden');
-                        });
-                    } else if ( that.options.showHideTransition.toLowerCase() === 'slide' ) {
-                        that._toastEl.slideUp(function () {
-                            that._toastEl.trigger('afterHidden');
-                        });
-                    } else {
-                        that._toastEl.hide(function () {
-                            that._toastEl.trigger('afterHidden');
-                        });
+                    switch ( trans ) {
+                        case 'fade':
+                            that._toastEl.fadeOut(that.postHide);
+                            break;
+                        case 'slide':
+                            that._toastEl.slideUp(that.postHide);
+                            break;
+                        default:
+                            that._toastEl.hide(that.postHide);
                     }
 
                 }, this.options.hideAfter);
             }
         },
 
+        /* public methods */
+
         reset: function ( resetWhat ) {
 
             if ( resetWhat === 'all' ) {
-                $('.jq-toast-wrap').remove();
+                $('#jqt-wrap').remove();
             } else {
                 this._toastEl.remove();
             }
@@ -327,13 +361,17 @@ if ( typeof Object.create !== 'function' ) {
         },
 
         close: function() {
-            this._toastEl.find('.jq-toast-close').click();
+            this._toastEl.find('.jqt-close').click();
         }
     };
 
     $.toast = function(options) {
         var toast = Object.create(Toast);
         toast.init(options, this);
+
+        var clear = function( ) {
+            for(var i in $.toast.options) $.toast.options[i] = false;
+        };
 
         return {
 
@@ -356,7 +394,7 @@ if ( typeof Object.create !== 'function' ) {
         heading: '',
         showHideTransition: 'fade',
         allowToastClose: true,
-        hideAfter: 3000,
+        hideAfter: 5000,
         loader: true,
         loaderBg: '#9EC600',
         stack: 5,
@@ -365,13 +403,13 @@ if ( typeof Object.create !== 'function' ) {
         textColor: false,
         textAlign: 'left',
         icon: false,
-        closeicon: '&times;', //html or icon-url
-        xclass: false,
-        beforeShow: null,
-        afterShown: null,
-        beforeHide: null,
-        afterHidden: null,
-        onClick: null
+        closeicon: '&times;',
+        myclass: false,
+        beforeShow: false,
+        afterShown: false,
+        beforeHide: false,
+        afterHidden: false,
+        onClick: false
     };
 
-})( jQuery, window );
+})( jQuery, window, document );
